@@ -1,40 +1,31 @@
-name: Build Android APK
+name: Build
 on: [push, workflow_dispatch]
 
 jobs:
-  build:
+  android:
     runs-on: ubuntu-22.04
-
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Java JDK
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install System Dependencies
+      - name: Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ccache libffi-dev libssl-dev autoconf automake libtool pkg-config zlib1g-dev python3-dev gettext openjdk-17-jdk unzip
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install Buildozer & Cython
+      - name: Build
         run: |
           pip install --upgrade pip
           pip install buildozer cython==0.29.37 kivy
-
-      - name: Build APK with Buildozer
-        run: |
           yes | buildozer -v android debug
 
-      - name: Upload Finished APK Artifact
+      - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: Camera-Renamer-APK
